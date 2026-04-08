@@ -12,7 +12,7 @@ Real-world market outcome validation
 The dataset spans 1,439 labeled data points across 40 US-listed equities and 13 financial data categories. It captures not only sentiment classifications but the full decision-making context, including AI reasoning chains, confidence scores, human correction signals, and real market outcomes. It is architecturally aligned with Reinforcement Learning from Human Feedback (RLHF) training paradigms, enabling direct integration into modern LLM fine-tuning pipelines without additional preprocessing.
 
 # Research Paper
-Please see the document downloaded to read the full 24 page research paper as seen on arXiv. Enjoy the read. 
+Please see the document downloaded to read the full 24 page research paper as seen on arXiv (http://arxiv.org/abs/2604.05135). Enjoy the read
 
 
 # Dataset Snapshot
