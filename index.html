@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RizqSpark — Deep Tech AI Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050505;
+    --gray-900: #0f0f0f;
+    --gray-800: #1a1a1a;
+    --gray-700: #2a2a2a;
+    --gray-600: #404040;
+    --gray-400: #888888;
+    --gray-200: #cccccc;
+    --gray-100: #e8e8e8;
+    --white: #f5f5f5;
+    --accent: #e0e0e0;
+    --line: rgba(255,255,255,0.08);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--gray-200);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 8px; height: 8px;
+    background: var(--white);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 32px; height: 32px;
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.1s ease;
+    mix-blend-mode: difference;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9997;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 48px;
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(20px);
+    background: rgba(5,5,5,0.8);
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .nav-logo span {
+    color: var(--gray-400);
+    font-weight: 400;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    position: relative;
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--white);
+    transition: width 0.3s ease;
+  }
+
+  .nav-links a:hover, .nav-links a.active {
+    color: var(--white);
+  }
+
+  .nav-links a:hover::after, .nav-links a.active::after {
+    width: 100%;
+  }
+
+  /* PAGES */
+  .page {
+    display: none;
+    min-height: 100vh;
+    padding-top: 80px;
+  }
+  .page.active { display: block; }
+
+  /* SECTION LAYOUT */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+
+  /* GRID LINE BACKGROUND */
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  /* ═══════════════════════════════════════
+     HOME PAGE
+  ═══════════════════════════════════════ */
+  #home { position: relative; overflow: hidden; }
+
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .hero-grid { z-index: 0; }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 120px 48px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .hero-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero-label::before {
+    content: '';
+    display: inline-block;
+    width: 24px; height: 1px;
+    background: var(--gray-600);
+  }
+
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--white);
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+
+  .hero-title .line-gray { color: var(--gray-600); }
+
+  .hero-desc {
+    font-size: 1.05rem;
+    color: var(--gray-400);
+    max-width: 520px;
+    line-height: 1.8;
+    margin-bottom: 56px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.6s forwards;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.8s forwards;
+  }
+
+  .btn-primary {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    background: var(--white);
+    color: var(--black);
+    border: none;
+    cursor: none;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+
+  .btn-primary:hover {
+    background: var(--gray-200);
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    background: transparent;
+    color: var(--gray-400);
+    border: 1px solid var(--gray-700);
+    cursor: none;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--gray-400);
+    color: var(--white);
+    transform: translateY(-2px);
+  }
+
+  /* Animated orb */
+  .hero-orb {
+    position: absolute;
+    right: -100px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+    border: 1px solid rgba(255,255,255,0.05);
+    animation: pulse 4s ease-in-out infinite;
+    z-index: 1;
+  }
+
+  .hero-orb::before {
+    content: '';
+    position: absolute;
+    inset: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.04);
+    animation: pulse 4s ease-in-out infinite 0.5s;
+  }
+
+  .hero-orb::after {
+    content: '';
+    position: absolute;
+    inset: 80px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.03);
+    animation: pulse 4s ease-in-out infinite 1s;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; transform: scale(1) translateY(-50%); }
+    50% { opacity: 1; transform: scale(1.02) translateY(-50%); }
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    border-top: 1px solid var(--line);
+    padding: 48px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--line);
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1s forwards;
+  }
+
+  .stat-item {
+    background: var(--black);
+    padding: 32px 40px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s ease;
+  }
+
+  .stat-item:hover { background: var(--gray-900); }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 2.5rem;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-600);
+  }
+
+  /* Features section */
+  .features {
+    padding: 120px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    margin-bottom: 80px;
+  }
+
+  .section-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gray-600);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-tag::before {
+    content: '';
+    display: inline-block;
+    width: 20px; height: 1px;
+    background: var(--gray-700);
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    color: var(--white);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+  }
+
+  .feature-card {
+    background: var(--black);
+    padding: 48px 40px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s ease;
+  }
+
+  .feature-card:hover { background: var(--gray-900); }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gray-600), transparent);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+  }
+
+  .feature-card:hover::before { transform: scaleX(1); }
+
+  .feature-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--gray-700);
+    letter-spacing: 0.15em;
+    margin-bottom: 24px;
+  }
+
+  .feature-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--white);
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+
+  .feature-desc {
+    font-size: 0.9rem;
+    color: var(--gray-400);
+    line-height: 1.8;
+  }
+
+  /* ═══════════════════════════════════════
+     ABOUT PAGE
+  ═══════════════════════════════════════ */
+  .about-hero {
+    padding: 120px 48px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .about-hero-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: end;
+  }
+
+  .about-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--white);
+  }
+
+  .about-subtitle {
+    font-size: 1rem;
+    color: var(--gray-400);
+    line-height: 1.9;
+    margin-bottom: 32px;
+  }
+
+  .about-body {
+    padding: 80px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .about-section {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 80px;
+    padding: 64px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .about-section:last-child { border-bottom: none; }
+
+  .about-section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray-600);
+    padding-top: 4px;
+  }
+
+  .about-section-content h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--white);
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+  }
+
+  .about-section-content p {
+    font-size: 0.95rem;
+    color: var(--gray-400);
+    line-height: 1.9;
+    margin-bottom: 16px;
+  }
+
+  .founder-card {
+    margin-top: 40px;
+    padding: 40px;
+    border: 1px solid var(--gray-800);
+    background: var(--gray-900);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .founder-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--gray-600);
+  }
+
+  .founder-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .founder-role {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-600);
+    margin-bottom: 20px;
+  }
+
+  .founder-bio {
+    font-size: 0.9rem;
+    color: var(--gray-400);
+    line-height: 1.9;
+  }
+
+  .badge {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 6px 14px;
+    border: 1px solid var(--gray-700);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+  }
+
+  /* ═══════════════════════════════════════
+     SENSEAI PAGE
+  ═══════════════════════════════════════ */
+  .senseai-hero {
+    padding: 120px 48px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+
+  .senseai-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gray-600);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .senseai-label::before {
+    content: '';
+    display: inline-block;
+    width: 20px; height: 1px;
+    background: var(--gray-700);
+  }
+
+  .senseai-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3rem, 7vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--white);
+    margin-bottom: 32px;
+  }
+
+  .senseai-desc {
+    font-size: 1.05rem;
+    color: var(--gray-400);
+    max-width: 600px;
+    line-height: 1.9;
+    margin-bottom: 48px;
+  }
+
+  .paper-links {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .paper-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    border: 1px solid var(--gray-700);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .paper-link:hover {
+    border-color: var(--gray-400);
+    color: var(--white);
+    transform: translateY(-2px);
+  }
+
+  .paper-link .arrow { transition: transform 0.3s ease; }
+  .paper-link:hover .arrow { transform: translateX(4px); }
+
+  /* Use cases */
+  .use-cases {
+    padding: 80px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .use-cases-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--line);
+    margin-top: 60px;
+  }
+
+  .use-case-card {
+    background: var(--black);
+    padding: 48px;
+    transition: background 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .use-case-card:hover { background: var(--gray-900); }
+
+  .use-case-icon {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--gray-700);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  .use-case-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--white);
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+
+  .use-case-desc {
+    font-size: 0.9rem;
+    color: var(--gray-400);
+    line-height: 1.85;
+  }
+
+  /* Dataset section */
+  .dataset-section {
+    padding: 80px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-top: 1px solid var(--line);
+  }
+
+  .dataset-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--line);
+    margin-top: 60px;
+  }
+
+  .dataset-stat {
+    background: var(--black);
+    padding: 40px 32px;
+    transition: background 0.3s ease;
+  }
+
+  .dataset-stat:hover { background: var(--gray-900); }
+
+  .dataset-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 2.2rem;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .dataset-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-600);
+    line-height: 1.6;
+  }
+
+  /* Findings ticker */
+  .findings-ticker {
+    padding: 40px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .ticker-track {
+    display: flex;
+    gap: 80px;
+    animation: ticker 25s linear infinite;
+    white-space: nowrap;
+  }
+
+  .ticker-item {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-600);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+  }
+
+  .ticker-dot {
+    width: 4px; height: 4px;
+    background: var(--gray-600);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ═══════════════════════════════════════
+     CONTACT PAGE
+  ═══════════════════════════════════════ */
+  .contact-hero {
+    padding: 120px 48px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .contact-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--white);
+    margin-bottom: 48px;
+  }
+
+  .contact-title .dim { color: var(--gray-700); }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--line);
+    margin-top: 80px;
+  }
+
+  .contact-card {
+    background: var(--black);
+    padding: 48px;
+    transition: background 0.3s ease;
+  }
+
+  .contact-card:hover { background: var(--gray-900); }
+
+  .contact-card-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray-700);
+    margin-bottom: 20px;
+  }
+
+  .contact-card-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  .contact-card-desc {
+    font-size: 0.9rem;
+    color: var(--gray-400);
+    line-height: 1.8;
+    margin-bottom: 28px;
+  }
+
+  .contact-email {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--white);
+    text-decoration: none;
+    border-bottom: 1px solid var(--gray-700);
+    padding-bottom: 4px;
+    transition: border-color 0.3s ease;
+    display: inline-block;
+  }
+
+  .contact-email:hover { border-color: var(--white); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 32px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-700);
+  }
+
+  .footer-copy {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: var(--gray-700);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--gray-700); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    .nav-links { gap: 20px; }
+    .hero-content, .about-hero, .about-body,
+    .senseai-hero, .use-cases, .dataset-section,
+    .contact-hero, .features { padding-left: 24px; padding-right: 24px; }
+    .features-grid, .use-cases-grid { grid-template-columns: 1fr; }
+    .stats-bar, .dataset-grid { grid-template-columns: repeat(2, 1fr); }
+    .about-hero-inner, .about-section, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+    .hero-orb { display: none; }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="#" class="nav-logo" onclick="showPage('home')">Rizq<span>Spark</span></a>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showPage('home')" id="nav-home" class="active">Home</a></li>
+    <li><a href="#" onclick="showPage('about')" id="nav-about">About</a></li>
+    <li><a href="#" onclick="showPage('senseai')" id="nav-senseai">SenseAI</a></li>
+    <li><a href="#" onclick="showPage('contact')" id="nav-contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════ HOME ═══════════════ -->
+<div id="home" class="page active">
+  <section class="hero">
+    <div class="grid-bg hero-grid"></div>
+    <div class="hero-orb"></div>
+    <div class="hero-content">
+      <div class="hero-label">Deep Tech AI Research Lab</div>
+      <h1 class="hero-title">
+        Pushing the<br>
+        <span class="line-gray">Frontier of</span><br>
+        Financial AI
+      </h1>
+      <p class="hero-desc">
+        RizqSpark builds proprietary AI infrastructure for financial intelligence — datasets, models, and research that redefine how machines reason about markets.
+      </p>
+      <div class="hero-cta">
+        <a href="#" class="btn-primary" onclick="showPage('senseai')">Explore SenseAI</a>
+        <a href="#" class="btn-secondary" onclick="showPage('about')">About the Lab</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="stats-bar">
+    <div class="stat-item fade-in">
+      <div class="stat-num">1,439+</div>
+      <div class="stat-label">Labelled Data Points</div>
+    </div>
+    <div class="stat-item fade-in">
+      <div class="stat-num">40</div>
+      <div class="stat-label">US-Listed Equities</div>
+    </div>
+    <div class="stat-item fade-in">
+      <div class="stat-num">6</div>
+      <div class="stat-label">Novel Empirical Findings</div>
+    </div>
+    <div class="stat-item fade-in">
+      <div class="stat-num">13</div>
+      <div class="stat-label">Data Fields Per Point</div>
+    </div>
+  </div>
+
+  <div class="features">
+    <div class="section-header fade-in">
+      <div class="section-tag">What We Build</div>
+      <h2 class="section-title">AI infrastructure<br>for financial reasoning</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-in">
+        <div class="feature-num">01</div>
+        <h3 class="feature-title">Proprietary Datasets</h3>
+        <p class="feature-desc">Continuously collected, RLHF-aligned financial sentiment data enriched with reasoning chains, correction signals, and real market outcome validation.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-num">02</div>
+        <h3 class="feature-title">Published Research</h3>
+        <p class="feature-desc">Peer-reviewed findings documenting LLM failure modes in financial reasoning — including the first observation of Latent Reasoning Drift.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-num">03</div>
+        <h3 class="feature-title">Enterprise Applications</h3>
+        <p class="feature-desc">Fine-tuning pipelines and model alignment tools designed for institutional deployment in trading, compliance, and financial research.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">RizqSpark</div>
+    <div class="footer-copy">© 2026 RizqSpark. All rights reserved.</div>
+  </footer>
+</div>
+
+<!-- ═══════════════ ABOUT ═══════════════ -->
+<div id="about" class="page">
+  <div class="about-hero">
+    <div class="about-hero-inner">
+      <h1 class="about-title fade-in">About<br>the Lab</h1>
+      <div class="fade-in">
+        <p class="about-subtitle">RizqSpark is a deep tech AI research lab pushing the frontier of financial artificial intelligence. We build the data infrastructure, research foundations, and model alignment tools that the next generation of enterprise financial AI demands.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-body">
+    <div class="about-section fade-in">
+      <div class="about-section-label">Our Mission</div>
+      <div class="about-section-content">
+        <h3>Aligning AI with the precision of financial expertise</h3>
+        <p>Financial AI systems fail not because they lack intelligence, but because they lack the right data. General-purpose language models trained on internet text cannot reason about markets, earnings, and filings the way trained analysts do. RizqSpark exists to close that gap.</p>
+        <p>We do this by building proprietary, continuously collected datasets that capture not just what financial sentiment is — but how expert analysts reason toward it, where AI reasoning fails, and how those failures can be systematically corrected through targeted fine-tuning.</p>
+      </div>
+    </div>
+
+    <div class="about-section fade-in">
+      <div class="about-section-label">What We Are</div>
+      <div class="about-section-content">
+        <h3>A deep tech lab at the intersection of AI alignment and finance</h3>
+        <p>RizqSpark operates at the intersection of three disciplines: financial NLP, reinforcement learning from human feedback (RLHF), and enterprise AI deployment. Our work is grounded in published academic research and oriented toward commercial impact.</p>
+        <p>Our flagship project, SenseAI, is the first continuously collected, RLHF-aligned financial sentiment dataset in the literature — published on arXiv and submitted to leading AI conferences including IJCAI 2026 and CLEF 2026.</p>
+      </div>
+    </div>
+
+    <div class="about-section fade-in">
+      <div class="about-section-label">The Founder</div>
+      <div class="about-section-content">
+        <h3>Built by an independent researcher</h3>
+        <p>RizqSpark was founded and is led by Berny Kabalisa — an independent applied machine learning researcher and the first published Rwandan AI researcher.</p>
+        <div class="founder-card">
+          <div class="founder-name">Berny Kabalisa</div>
+          <div class="founder-role">Founder & CEO — Applied ML Researcher</div>
+          <p class="founder-bio">At 26, Berny independently built the SenseAI data pipeline, collected and annotated over 1,439 RLHF-aligned financial sentiment data points, identified six novel empirical findings including the first documented observation of Latent Reasoning Drift in financial NLP, and published the research on arXiv — all without institutional affiliation, co-authors, or research funding.</p>
+          <p class="founder-bio" style="margin-top:12px;">His work spans the full stack of AI research and commercialisation: R&D, data engineering, model alignment, academic publication, and go-to-market strategy.</p>
+          <span class="badge">First Published Rwandan AI Researcher</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">RizqSpark</div>
+    <div class="footer-copy">© 2026 RizqSpark. All rights reserved.</div>
+  </footer>
+</div>
+
+<!-- ═══════════════ SENSEAI ═══════════════ -->
+<div id="senseai" class="page">
+
+  <div class="findings-ticker">
+    <div class="ticker-track">
+      <div class="ticker-item"><div class="ticker-dot"></div>Latent Reasoning Drift</div>
+      <div class="ticker-item"><div class="ticker-dot"></div>Confidence Over-Hedging</div>
+      <div class="ticker-item"><div class="ticker-dot"></div>Goldilocks Zone</div>
+      <div class="ticker-item"><div class="ticker-dot"></div>Forward Projection</div>
+      <div class="ticker-item"><div class="ticker-dot"></div>Sentiment Hypersensitivity</div>
+      <div class="ticker-item"><div class="ticker-dot"></div>Model Version Effects</div>
+      <div class="ticker-item"><div class="ticker-dot"></div>RLHF Alignment</div>
+      <div class="ticker-item"><div class="ticker-dot"></div>Latent Reasoning Drift</div>
+      <div class="ticker-item"><div class="ticker-dot"></div>Confidence Over-Hedging</div>
+      <div class="ticker-item"><div class="ticker-dot"></div>Goldilocks Zone</div>
+      <div class="ticker-item"><div class="ticker-dot"></div>Forward Projection</div>
+      <div class="ticker-item"><div class="ticker-dot"></div>Sentiment Hypersensitivity</div>
+      <div class="ticker-item"><div class="ticker-dot"></div>Model Version Effects</div>
+      <div class="ticker-item"><div class="ticker-dot"></div>RLHF Alignment</div>
+    </div>
+  </div>
+
+  <div class="senseai-hero">
+    <div class="senseai-label">Flagship Research Project</div>
+    <h1 class="senseai-title fade-in">SenseAI</h1>
+    <p class="senseai-desc fade-in">The first continuously collected, RLHF-aligned financial sentiment dataset — enriched with AI reasoning chains, expert correction signals, confidence scores, and real-world market outcome validation.</p>
+    <div class="paper-links fade-in">
+      <a href="http://arxiv.org/abs/2604.05135" target="_blank" class="paper-link">
+        arXiv Paper <span class="arrow">→</span>
+      </a>
+      <a href="https://gist.science/paper/2604.05135" target="_blank" class="paper-link">
+        Plain English Summary <span class="arrow">→</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="dataset-section">
+    <div class="section-header fade-in">
+      <div class="section-tag">Dataset Scale</div>
+      <h2 class="section-title">Built for RLHF.<br>Designed for enterprise.</h2>
+    </div>
+    <div class="dataset-grid">
+      <div class="dataset-stat fade-in">
+        <div class="dataset-num">1,439+</div>
+        <div class="dataset-label">Labelled data points & growing continuously</div>
+      </div>
+      <div class="dataset-stat fade-in">
+        <div class="dataset-num">40</div>
+        <div class="dataset-label">US-listed equities across 6 sectors</div>
+      </div>
+      <div class="dataset-stat fade-in">
+        <div class="dataset-num">13</div>
+        <div class="dataset-label">Data fields per point including full CoT reasoning</div>
+      </div>
+      <div class="dataset-stat fade-in">
+        <div class="dataset-num">6</div>
+        <div class="dataset-label">Novel empirical findings published on arXiv</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="use-cases">
+    <div class="section-header fade-in">
+      <div class="section-tag">Commercial Applications</div>
+      <h2 class="section-title">Where SenseAI<br>creates value</h2>
+    </div>
+    <div class="use-cases-grid">
+      <div class="use-case-card fade-in">
+        <div class="use-case-icon">01 — Trading</div>
+        <h3 class="use-case-title">Algorithmic Trading Signal Generation</h3>
+        <p class="use-case-desc">Current LLMs systematically soften strong directional signals — classifying clearly bullish news as "Slightly Bullish." This hedging bias has direct position-sizing implications for algorithmic trading systems. SenseAI provides the correction data to calibrate models toward sharper, more accurate directional signals.</p>
+      </div>
+      <div class="use-case-card fade-in">
+        <div class="use-case-icon">02 — Research</div>
+        <h3 class="use-case-title">Earnings Call & Analyst Report Interpretation</h3>
+        <p class="use-case-desc">LLMs exhibit forward projection and latent reasoning drift when interpreting earnings calls — injecting assumptions not present in the source text. SenseAI's reasoning chain data enables models to learn grounded, analyst-level interpretation that stays anchored to the actual document content.</p>
+      </div>
+      <div class="use-case-card fade-in">
+        <div class="use-case-icon">03 — Compliance</div>
+        <h3 class="use-case-title">Regulatory Filing Monitoring</h3>
+        <p class="use-case-desc">Hedged corporate language in SEC filings, FCA disclosures, and EBA reports is precisely the register most frequently misclassified by general-purpose models. Fine-tuning on SenseAI data teaches models to detect and correctly interpret the nuanced sentiment signals embedded in regulatory language.</p>
+      </div>
+      <div class="use-case-card fade-in">
+        <div class="use-case-icon">04 — Risk</div>
+        <h3 class="use-case-title">Portfolio-Level Sentiment Scoring</h3>
+        <p class="use-case-desc">Enterprise risk management requires consistent, calibrated sentiment scoring across large equity universes processed continuously. SenseAI's confidence calibration data corrects the miscalibration documented in our research — enabling reliable automated routing in high-throughput financial AI pipelines.</p>
+      </div>
+      <div class="use-case-card fade-in">
+        <div class="use-case-icon">05 — Fine-Tuning</div>
+        <h3 class="use-case-title">LLM Fine-Tuning & Model Alignment</h3>
+        <p class="use-case-desc">SenseAI is architecturally aligned with RLHF training paradigms. Each data point provides a complete preference signal: the AI output, the human correction, the correction magnitude, the reasoning chain, and the market outcome. AI laboratories can integrate SenseAI directly into supervised fine-tuning and reward model training without additional preprocessing.</p>
+      </div>
+      <div class="use-case-card fade-in">
+        <div class="use-case-icon">06 — Licensing</div>
+        <h3 class="use-case-title">Proprietary Data Asset Licensing</h3>
+        <p class="use-case-desc">SenseAI is available for licensing to AI laboratories, financial data providers, and institutional technology vendors. The combination of continuous collection, RLHF alignment, reasoning chain depth, and market outcome validation creates a dataset that cannot be readily replicated — both due to the domain expertise required and the time needed to build historical depth.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">RizqSpark</div>
+    <div class="footer-copy">© 2026 RizqSpark. All rights reserved.</div>
+  </footer>
+</div>
+
+<!-- ═══════════════ CONTACT ═══════════════ -->
+<div id="contact" class="page">
+  <div class="contact-hero">
+    <div class="senseai-label fade-in">Get In Touch</div>
+    <h1 class="contact-title fade-in">
+      Let's build<br>
+      <span class="dim">something</span><br>
+      together.
+    </h1>
+
+    <div class="contact-grid fade-in">
+      <div class="contact-card">
+        <div class="contact-card-label">Research Partnerships</div>
+        <h3 class="contact-card-title">Collaborate on Financial NLP</h3>
+        <p class="contact-card-desc">Interested in co-authoring Paper 2 or Paper 3? We're looking for researchers with experience in LLM fine-tuning, mechanistic interpretability, or financial NLP.</p>
+        <a href="mailto:bernykabalisa18@gmail.com" class="contact-email">bernykabalisa18@gmail.com</a>
+      </div>
+      <div class="contact-card">
+        <div class="contact-card-label">Pilot Programs</div>
+        <h3 class="contact-card-title">Access the SenseAI Dataset</h3>
+        <p class="contact-card-desc">We offer 1-month pilot programs for organisations looking to evaluate SenseAI for fine-tuning, research, or enterprise deployment. Data samples available under NDA.</p>
+        <a href="mailto:bernykabalisa18@gmail.com" class="contact-email">bernykabalisa18@gmail.com</a>
+      </div>
+      <div class="contact-card">
+        <div class="contact-card-label">Licensing & Acquisition</div>
+        <h3 class="contact-card-title">Strategic Data Partnerships</h3>
+        <p class="contact-card-desc">SenseAI is available for exclusive and non-exclusive licensing. AI laboratories and financial data infrastructure providers are welcome to initiate acquisition conversations.</p>
+        <a href="mailto:bernykabalisa18@gmail.com" class="contact-email">bernykabalisa18@gmail.com</a>
+      </div>
+      <div class="contact-card">
+        <div class="contact-card-label">Press & Media</div>
+        <h3 class="contact-card-title">Cover Our Research</h3>
+        <p class="contact-card-desc">Journalists and editors covering AI, fintech, or applied ML research are welcome to reach out for interviews, data, or commentary on our published findings.</p>
+        <a href="mailto:bernykabalisa18@gmail.com" class="contact-email">bernykabalisa18@gmail.com</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">RizqSpark</div>
+    <div class="footer-copy">© 2026 RizqSpark. All rights reserved.</div>
+  </footer>
+</div>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+  let mouseX = 0, mouseY = 0;
+  let ringX = 0, ringY = 0;
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    cursor.style.left = mouseX - 4 + 'px';
+    cursor.style.top = mouseY - 4 + 'px';
+  });
+
+  function animateCursor() {
+    ringX += (mouseX - ringX) * 0.12;
+    ringY += (mouseY - ringY) * 0.12;
+    cursorRing.style.left = ringX - 16 + 'px';
+    cursorRing.style.top = ringY - 16 + 'px';
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform = 'scale(2)';
+      cursorRing.style.transform = 'scale(1.5)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = 'scale(1)';
+      cursorRing.style.transform = 'scale(1)';
+    });
+  });
+
+  // Page navigation
+  function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    document.getElementById('nav-' + pageId).classList.add('active');
+    window.scrollTo(0, 0);
+    initObserver();
+  }
+
+  // Intersection observer for fade-in
+  function initObserver() {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => {
+      observer.observe(el);
+    });
+  }
+
+  initObserver();
+</script>
+</body>
+</html>
